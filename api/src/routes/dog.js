@@ -29,8 +29,6 @@ router.get('/dogs', async (req, res, next) => {
     dogsAPI = dogsAPI.data
     //filtro lo que voy a mostrar en Home
     dogsAPI = dogsAPI.map((d) => {
-        if(!d.temperament) console.log(d)
-        if(d.weight.metric.includes('NaN')) console.log(d)
         var {name} = d
         var weight = d.weight.metric
         var minWeight
@@ -66,7 +64,14 @@ router.get('/dogs', async (req, res, next) => {
             image
         }
     })
-    res.send([...dogsAPI, ...dogsDB])
+    var dogs = [...dogsAPI, ...dogsDB]
+    var {name} = req.query
+    if(name){
+        dogs = dogs.filter((d) => {
+            return d.name.toUpperCase().includes(name.toUpperCase())
+        })
+    }
+    res.send(dogs)
 })
 
 
