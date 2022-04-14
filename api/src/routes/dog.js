@@ -140,5 +140,20 @@ router.get('/dogs/:idRaza', async (req, res, next) => {
     }
 })
 
+router.get('/temperaments', async (req, res, next) => {
+    //Todos los temperamentos posibles están en las razas de perro de la API
+    //En la base de datos no hay temperamentos distintos porque no se pueden
+    //crear temperamentos
+    var dogs = await getDogsFromAPI()
+    var temperaments = []
+    dogs.forEach(d => {
+        if (d.temperament){
+            temperaments = temperaments.concat( d.temperament.split(", ") )
+        }
+    })
+    temperaments = new Set(temperaments)
+    res.send([...temperaments])
+})
+
 
 module.exports = router
