@@ -141,18 +141,29 @@ router.get('/dogs/:idRaza', async (req, res, next) => {
 })
 
 router.get('/temperaments', async (req, res, next) => {
-    //Todos los temperamentos posibles están en las razas de perro de la API
-    //En la base de datos no hay temperamentos distintos porque no se pueden
-    //crear temperamentos
-    var dogs = await getDogsFromAPI()
-    var temperaments = []
-    dogs.forEach(d => {
-        if (d.temperament){
-            temperaments = temperaments.concat( d.temperament.split(", ") )
-        }
-    })
-    temperaments = new Set(temperaments)
-    res.send([...temperaments])
+    var temperaments = await Temperament.findAll({
+        attributes: ['name']
+    }
+    )
+
+    if(temperaments.length === 0){  
+        var dogs = await getDogsFromAPI()
+        var temperamentosRepetidos = []
+        dogs.forEach(d => {
+            if (d.temperament){
+                temperamentosRepetidos = temperamentosRepetidos.concat(
+                    d.temperament.split(", "))
+            }
+        })
+        temperaments = new Set(temperamentosRepetidos)
+        temperaments = [...temperaments].map(t => {
+            return {
+                name: t
+            }
+        })
+        await Temperament.bulkCreate(temperaments)
+    }
+    res.send(temperaments)
 })
 
 
