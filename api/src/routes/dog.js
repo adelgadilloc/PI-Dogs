@@ -3,6 +3,9 @@ const {Dog, Temperament} = require('../db')
 const axios = require('axios')
 const {API_KEY} = process.env
 
+const RAZA_DE_PERRO_CREADA = 'Raza de perro creada'
+const NO_SE_CREO_RAZA_DE_PERRO = 'No se pudo crear la raza de perro'
+
 const router = Router()
 
 const getDogsFromDB = async () => {
@@ -166,5 +169,44 @@ router.get('/temperaments', async (req, res, next) => {
     res.send(temperaments)
 })
 
+router.post('/dog', async (req, res, next) => {
+    const {
+        name,
+        minHeight,
+        maxHeight,
+        minWeight,
+        maxWeight,
+        minLifeSpan,
+        maxLifeSpan,
+        temperaments
+    } = req.body
+
+    try{
+        var dog = await Dog.create({
+            name,
+            minHeight,
+            maxHeight,
+            minWeight,
+            maxWeight,
+            minLifeSpan,
+            maxLifeSpan
+        })
+    } catch (e){
+        res.send(NO_SE_CREO_RAZA_DE_PERRO)
+    }
+    
+    temperaments.forEach(async t => {
+        var temperament = await Temperament.findOne({
+            where:{
+                name: t
+            }
+        })
+        if(temperament){
+            dog.setTemperaments(temperament.id)
+        }
+    })
+
+    res.send(RAZA_DE_PERRO_CREADA)
+})
 
 module.exports = router
