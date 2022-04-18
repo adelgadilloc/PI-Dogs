@@ -32,49 +32,60 @@ const getDogsFromAPI = async () => {
 }
 
 const mapeoDB = (d) => {
-    const {dataValues} = d
+    const {
+        id,
+        name,
+        minWeight,
+        maxWeight,
+        temperaments} = d
     return {
-        name: dataValues.name,
-        minWeight: dataValues.minWeight,
-        maxWeight: dataValues.maxWeight,
-        temperaments: dataValues.temperaments,
+        id,
+        name,
+        minWeight,
+        maxWeight,
+        temperaments,
+        isCreated: true
     }
 }
 
 const mapeoAPI = (d) => {
+    var {id} = d
     var {name} = d
     var weight = d.weight.metric
     var minWeight
     var maxWeight
     if(weight === 'NaN'){
-        minWeight = "No se conoce su peso mínimo"
-        maxWeight = "No se conoce su peso máximo"
+        minWeight = null
+        maxWeight = null
     }
     else{
         minWeight = (weight.split(" ")[0] === 'NaN') ? 
-        "No se conoce su peso mínimo" 
+        null 
         : 
-        weight.split(" ")[0]
+        Number(weight.split(" ")[0])
         
         maxWeight = (weight.split(" ")[2] === 'NaN') ? 
-        "No se conoce su peso máximo" 
+        null 
         : 
-        weight.split(" ")[2]
+        Number(weight.split(" ")[2])
     }
 
     var temperaments = d.temperament? 
     d.temperament.split(", ") 
     : 
-    "No se conoce su temperamento"
-
+    null
+    if(weight==='NaN')
+        console.log(d)
     var image = d.image.url
 
     return {
+        id,
         name,
         minWeight,
         maxWeight,
         temperaments,
-        image
+        image,
+        isCreated: false
     }
 }
 
@@ -91,7 +102,7 @@ router.get('/dogs', async (req, res, next) =>{
     dogsAPI = dogsAPI.map((d) => {
         return mapeoAPI(d)
     })
-    var dogs = [...dogsAPI, ...dogsDB]
+    var dogs = [...dogsDB, ...dogsAPI]
     var {name} = req.query
     if(name){
         dogs = dogs.filter((d) => {
@@ -101,7 +112,6 @@ router.get('/dogs', async (req, res, next) =>{
             dogs = 'No se encontraron razas de perro con ese nombre'
         }
     }
-
     res.send(dogs)
 })
 
@@ -125,16 +135,16 @@ router.get('/dogs/:idRaza', async (req, res, next) => {
             }
             else{
                 aux.minHeight = height.split(" ")[0] !== 'NaN'? 
-                                    height.split(" ")[0]
+                                    Number(height.split(" ")[0])
                                     :
                                     'No tiene altura mínima'
                 aux.maxHeight = height.split(" ")[2] !== 'NaN'? 
-                                    height.split(" ")[2]
+                                    Number(height.split(" ")[2])
                                     :
                                     'No tiene altura mínima'
             }
-            aux.minLifeSpan = dog.life_span.split(" ")[0]
-            aux.maxLifeSpan = dog.life_span.split(" ")[2]
+            aux.minLifeSpan = Number(dog.life_span.split(" ")[0])
+            aux.maxLifeSpan = Number(dog.life_span.split(" ")[2])
             res.send(aux)
         }
         else{
@@ -148,23 +158,25 @@ router.get('/temperaments', async (req, res, next) => {
         attributes: ['name']
     }
     )
+    temperaments = temperaments.map(t => {
+        return t.dataValues.name
+    })
 
     if(temperaments.length === 0){  
         var dogs = await getDogsFromAPI()
         var temperamentosRepetidos = []
-        dogs.forEach(d => {
-            if (d.temperament){
+        dogs.forEach(dog => {
+            if (dog.temperament){
                 temperamentosRepetidos = temperamentosRepetidos.concat(
-                    d.temperament.split(", "))
+                    dog.temperament.split(", "))
             }
         })
-        temperaments = new Set(temperamentosRepetidos)
-        temperaments = [...temperaments].map(t => {
+        temperaments = [...(new Set(temperamentosRepetidos))]
+        await Temperament.bulkCreate(temperaments.map(t => {
             return {
                 name: t
             }
-        })
-        await Temperament.bulkCreate(temperaments)
+        }))
     }
     res.send(temperaments)
 })
