@@ -4,6 +4,8 @@ export const GET_DOGS = 'GET_DOGS'
 export const SEARCH_DOGS = 'SEARCH_DOGS'
 export const FILTER = 'FILTER'
 export const GET_TEMPERAMENTS = 'GET_TEMPERAMENTS'
+export const GET_DETAIL = 'GET_DETAIL'
+export const SORT = 'SORT'
 
 export function getDogs(){
     return async function (dispatch){
@@ -37,11 +39,29 @@ export function filter(filter){
 export function getTemperaments(){
     return async function (dispatch){
         const {data} = await axios.get('http://localhost:3001/temperaments')
-        console.log(data)
         return dispatch({
             type: GET_TEMPERAMENTS,
             payload: data
         }
         )
+    }
+}
+
+export function getDetail(id){
+    return async function (dispatch){
+        const {data} = await axios.get(`http://localhost:3001/dogs/${id}`)
+        return dispatch({
+            type:GET_DETAIL,
+            payload: data
+        })
+    }
+}
+
+export function sort(sort){
+    return function (dispatch){
+        return dispatch({
+            type: SORT,
+            payload: sort
+        })
     }
 }

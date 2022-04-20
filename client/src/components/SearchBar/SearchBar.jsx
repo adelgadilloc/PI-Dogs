@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { searchDogs } from "../../actions"
+import Sort from "../Sort/Sort"
+import Filter from "../Filter/Filter"
 
 export default function SearchBar(){
     const [search, setSearch] = useState('')
@@ -20,7 +22,9 @@ export default function SearchBar(){
     return <div>
         <form onSubmit={onSubmit}>
             <input type='search' onChange={onChange} value={search}/>
-            <input type='button' value='Buscar'/>
+            <input type='button' value='Search'/>
         </form>
+        <Filter/>
+        <Sort/>
     </div>
 }

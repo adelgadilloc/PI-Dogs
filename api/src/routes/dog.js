@@ -73,11 +73,9 @@ const mapeoAPI = (d) => {
     var temperaments = d.temperament? 
     d.temperament.split(", ") 
     : 
-    null
-    if(weight==='NaN')
-        console.log(d)
+    []
     var image = d.image.url
-
+    
     return {
         id,
         name,
@@ -130,21 +128,22 @@ router.get('/dogs/:idRaza', async (req, res, next) => {
             var aux = mapeoAPI(dog)
             var height = dog.height.metric
             if(height === 'NaN'){
-                aux.minHeight = 'No tiene altura mínima'
-                aux.maxHeight = 'No tiene altura máxima'
+                aux.minHeight = null
+                aux.maxHeight = null
             }
             else{
                 aux.minHeight = height.split(" ")[0] !== 'NaN'? 
                                     Number(height.split(" ")[0])
                                     :
-                                    'No tiene altura mínima'
+                                    null
                 aux.maxHeight = height.split(" ")[2] !== 'NaN'? 
                                     Number(height.split(" ")[2])
                                     :
-                                    'No tiene altura mínima'
+                                    null
             }
             aux.minLifeSpan = Number(dog.life_span.split(" ")[0])
             aux.maxLifeSpan = Number(dog.life_span.split(" ")[2])
+            console.log(aux)
             res.send(aux)
         }
         else{

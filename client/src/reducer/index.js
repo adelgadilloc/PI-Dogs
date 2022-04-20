@@ -1,10 +1,11 @@
-import { FILTER, GET_DOGS, GET_TEMPERAMENTS, SEARCH_DOGS } from "../actions"
-import { allDogs, dogsFromAPI, dogsFromDB } from "../constantes/constantes"
+import { FILTER, GET_DETAIL, GET_DOGS, GET_TEMPERAMENTS, SEARCH_DOGS, SORT } from "../actions"
+import { allDogs, ASC, DESC, ASC_WEIGHT, DESC_WEIGHT, dogsFromAPI, dogsFromDB, notKnown } from "../constantes/constantes"
 
 const initialState = {
     dogs: [],
     filtered: [],
-    temperaments: []
+    temperaments: [],
+    detail: {}
 }
 
 export default function reducer (state = initialState, action){
@@ -41,8 +42,15 @@ export default function reducer (state = initialState, action){
                         return dog.isCreated
                     })
                     break
+                case notKnown:
+                    filtered = state.dogs.filter(dog => {
+                        return dog.temperaments.length === 0
+                    })
+                    break
                 default:
-                    filtered = state.dogs
+                    filtered = state.dogs.filter(dog => {
+                        return dog.temperaments.includes(action.payload)
+                    })
                     break
             }
             return {
@@ -53,6 +61,50 @@ export default function reducer (state = initialState, action){
             return {
                 ...state,
                 temperaments: action.payload
+            }
+        case GET_DETAIL:
+            return {
+                ...state,
+                detail: action.payload
+            }
+        case SORT:
+            if([ASC, DESC].includes(action.payload)){
+                filtered = [...state.filtered.sort( (a,b) => {
+                    if(a.name.toUpperCase() < b.name.toUpperCase()){
+                        return action.payload === ASC ? -1 : 1
+                    }
+                    if(a.name.toUpperCase() > b.name.toUpperCase()){
+                        return action.payload === ASC ? 1 : -1
+                    }
+                    return 0    //este es el caso en que los dos nombres
+                                // son iguales
+                })]
+            }
+            else if([ASC_WEIGHT, DESC_WEIGHT].includes(action.payload)){
+                var perrosSinPeso = state.filtered.filter((d) => {
+                    return (d.minWeight === null && d.maxWeight === null)
+                })
+                var perrosConPeso = state.filtered.filter((d) => {
+                    return ! (d.minWeight === null && d.maxWeight === null) 
+                })
+                filtered = [...perrosConPeso.sort( (a,b) => {
+                    //los perros de perrosConPeso si no tienen peso mínimo,
+                    //sí tienen peso máximo
+                    var weightOfDogA = a.minWeight ? a.minWeight : a.maxWeight
+                    var weightOfDogB = b.minWeight ? b.minWeight : b.maxWeight
+                    
+                    if(action.payload === ASC_WEIGHT){
+                        return weightOfDogA - weightOfDogB
+                    }
+                    else{   //si action.payload === DESC_WEIGHT
+                        return weightOfDogB - weightOfDogA
+                    }
+                }), ...perrosSinPeso]
+            }
+            console.log(filtered)
+            return {
+                ...state,
+                filtered
             }
         default:
             return state

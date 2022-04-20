@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { allDogs, dogsFromAPI, dogsFromDB } from "../../constantes/constantes";
+import { allDogs, dogsFromAPI, dogsFromDB, notKnown } from "../../constantes/constantes";
 import { filter, getTemperaments } from "../../actions";
 import { useEffect } from "react";
 
@@ -20,18 +20,19 @@ export default function Filter(){
 
     return (
         <div>
-            <label>Filtrar </label>
+            <label>Filter </label>
             <select onChange={changeOption} defaultValue='elegirUnFiltro'>
-                <option disabled value='elegirUnFiltro'>Elegir un filtro</option>
+                <option disabled value='elegirUnFiltro'>Choose a filter</option>
                 <option disabled></option>
-                <option value={allDogs}>Sin filtro</option>
-                <option value={dogsFromAPI}>Razas existentes</option>
-                <option value={dogsFromDB}>Razas creadas</option>
+                <option value={allDogs}>No filter</option>
+                <option value={dogsFromAPI}>Extant breeds</option>
+                <option value={dogsFromDB}>Created breeds</option>
                 <option disabled></option>
-                <optgroup label="Temperamentos">
+                <optgroup label="Temperaments">
                     {temperaments.map(t => {
                         return <option key={t}>{t}</option>
                     })}
+                    <option value={notKnown}>Not known</option>
                 </optgroup>
             </select>
         </div>)
