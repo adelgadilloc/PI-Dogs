@@ -18,9 +18,37 @@ const getDogsFromDB = async () => {
             }
         }
     })
+    console.log(dogsDB)
     //findAll devuelve un array de objetos. Lo que necesito está en la 
     //propiedad dataValues de cada uno de esos objetos
-    dogsDB = dogsDB.map(d => {return d.dataValues})
+    dogsDB = dogsDB.map(d => {
+        const {
+            id,
+            name,
+            minWeight,
+            maxWeight,
+            minHeight,
+            maxHeight,
+            minLifeSpan,
+            maxLifeSpan} = d.dataValues
+        
+        var {temperaments} = d.dataValues
+        temperaments = temperaments.map(t => {
+            return t.name
+        })
+        return {
+            id,
+            name,
+            minWeight,
+            maxWeight,
+            minHeight,
+            maxHeight,
+            minLifeSpan,
+            maxLifeSpan,
+            temperaments,
+            isCreated: true
+        }
+    })
     return dogsDB
 }
 
@@ -28,78 +56,75 @@ const getDogsFromAPI = async () => {
     // axios devuelve un objeto. Lo que necesito está en la propiedad
     //data de ese objeto
     var {data} = await axios.get(`https://api.thedogapi.com/v1/breeds?api_key=${API_KEY}`)
+    data = data.map(d => {
+        var {id} = d
+        var {name} = d
+        var weight = d.weight.metric
+        var minWeight
+        var maxWeight
+        if(weight === 'NaN'){
+            minWeight = null
+            maxWeight = null
+        }
+        else{
+            minWeight = (weight.split(" ")[0] === 'NaN') ? 
+            null 
+            : 
+            Number(weight.split(" ")[0])
+            
+            maxWeight = (weight.split(" ")[2] === 'NaN') ? 
+            null 
+            : 
+            Number(weight.split(" ")[2])
+        }
+        
+        var height = d.height.metric
+        var minHeight
+        var maxHeight
+        if(height === 'NaN'){
+            minHeight = null
+            maxHeight = null
+        }
+        else{
+            minHeight = height.split(" ")[0] !== 'NaN'? 
+                                Number(height.split(" ")[0])
+                                :
+                                null
+            maxHeight = height.split(" ")[2] !== 'NaN'? 
+                                Number(height.split(" ")[2])
+                                :
+                                null
+        }
+        var minLifeSpan = Number(d.life_span.split(" ")[0])
+        var maxLifeSpan = Number(d.life_span.split(" ")[2])
+        var temperaments = d.temperament? 
+        d.temperament.split(", ") 
+        : 
+        []
+        var image = d.image.url
+        
+        return {
+            id,
+            name,
+            minWeight,
+            maxWeight,
+            minHeight,
+            maxHeight,
+            minLifeSpan,
+            maxLifeSpan,
+            temperaments,
+            image,
+            isCreated: false
+        }
+    })
     return data
 }
 
-const mapeoDB = (d) => {
-    const {
-        id,
-        name,
-        minWeight,
-        maxWeight,
-        temperaments} = d
-    return {
-        id,
-        name,
-        minWeight,
-        maxWeight,
-        temperaments,
-        isCreated: true
-    }
-}
 
-const mapeoAPI = (d) => {
-    var {id} = d
-    var {name} = d
-    var weight = d.weight.metric
-    var minWeight
-    var maxWeight
-    if(weight === 'NaN'){
-        minWeight = null
-        maxWeight = null
-    }
-    else{
-        minWeight = (weight.split(" ")[0] === 'NaN') ? 
-        null 
-        : 
-        Number(weight.split(" ")[0])
-        
-        maxWeight = (weight.split(" ")[2] === 'NaN') ? 
-        null 
-        : 
-        Number(weight.split(" ")[2])
-    }
-
-    var temperaments = d.temperament? 
-    d.temperament.split(", ") 
-    : 
-    []
-    var image = d.image.url
-    
-    return {
-        id,
-        name,
-        minWeight,
-        maxWeight,
-        temperaments,
-        image,
-        isCreated: false
-    }
-}
 
 router.get('/dogs', async (req, res, next) =>{
     var dogsDB = await getDogsFromDB()
     var dogsAPI = await getDogsFromAPI()
-    
-    //filtro lo que voy a mostrar en Home
-    dogsDB = dogsDB.map((d) => {
-        return mapeoDB(d)
-    })
-    
-    //filtro lo que voy a mostrar en Home
-    dogsAPI = dogsAPI.map((d) => {
-        return mapeoAPI(d)
-    })
     var dogs = [...dogsDB, ...dogsAPI]
     var {name} = req.query
     if(name){
@@ -125,26 +150,7 @@ router.get('/dogs/:idRaza', async (req, res, next) => {
     else {
         dog = dogsAPI.find((d) => {return d.id === Number(idRaza)})
         if (dog){
-            var aux = mapeoAPI(dog)
-            var height = dog.height.metric
-            if(height === 'NaN'){
-                aux.minHeight = null
-                aux.maxHeight = null
-            }
-            else{
-                aux.minHeight = height.split(" ")[0] !== 'NaN'? 
-                                    Number(height.split(" ")[0])
-                                    :
-                                    null
-                aux.maxHeight = height.split(" ")[2] !== 'NaN'? 
-                                    Number(height.split(" ")[2])
-                                    :
-                                    null
-            }
-            aux.minLifeSpan = Number(dog.life_span.split(" ")[0])
-            aux.maxLifeSpan = Number(dog.life_span.split(" ")[2])
-            console.log(aux)
-            res.send(aux)
+            res.send(dog)
         }
         else{
             res.send ('No se encontró ninguna raza de perro con ese id')
@@ -165,10 +171,8 @@ router.get('/temperaments', async (req, res, next) => {
         var dogs = await getDogsFromAPI()
         var temperamentosRepetidos = []
         dogs.forEach(dog => {
-            if (dog.temperament){
-                temperamentosRepetidos = temperamentosRepetidos.concat(
-                    dog.temperament.split(", "))
-            }
+            temperamentosRepetidos = temperamentosRepetidos.concat(
+                dog.temperaments)
         })
         temperaments = [...(new Set(temperamentosRepetidos))]
         await Temperament.bulkCreate(temperaments.map(t => {

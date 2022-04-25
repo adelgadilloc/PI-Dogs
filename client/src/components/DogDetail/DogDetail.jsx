@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
-import { getDetail } from "../../actions"
+import { getDetail, cleanDetail } from "../../actions"
 
 export default function DogDetail(){
     const {id} = useParams()
@@ -9,6 +9,7 @@ export default function DogDetail(){
     
     useEffect(() => {
         dispatch(getDetail(id))
+        return dispatch(cleanDetail())
     }, [dispatch, id])
 
     const detail = useSelector(state => state.detail)
@@ -25,7 +26,7 @@ export default function DogDetail(){
 
     return (
         Object.entries(detail).length === 0 ?
-            <h4>Cargando</h4>
+            <h4>Loading</h4>
             :
             <div>
                 <h1>{name}</h1>

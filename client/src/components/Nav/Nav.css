@@ -1,0 +1,17 @@
+.ul{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    background-color: rgb(34, 36, 35);
+    width: 100%;
+}
+
+li .link{
+    display: block;
+    color: rgb(253, 252, 252);
+    padding-bottom: 1vh;
+    padding-top: 1vh;
+    padding-left: 25vh;
+    padding-right: 25vh;
+    text-decoration: none;
+}

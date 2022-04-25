@@ -1,0 +1,9 @@
+.home-all-cards{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+.dog-image{
+    height: 40vh;
+    width: 40vh;
+}

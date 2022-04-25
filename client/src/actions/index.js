@@ -6,6 +6,8 @@ export const FILTER = 'FILTER'
 export const GET_TEMPERAMENTS = 'GET_TEMPERAMENTS'
 export const GET_DETAIL = 'GET_DETAIL'
 export const SORT = 'SORT'
+export const CLEAN_DETAIL = 'CLEAN_DETAIL'
+export const NOT_FIRST_TIME = 'NOT_FIRST_TIME'
 
 export function getDogs(){
     return async function (dispatch){
@@ -62,6 +64,28 @@ export function sort(sort){
         return dispatch({
             type: SORT,
             payload: sort
+        })
+    }
+}
+
+export function createDog(dog){
+    return async function (){
+        return await axios.post('http://localhost:3001/dog', dog)
+    }
+}
+
+export function cleanDetail(){
+    return function (dispatch) {
+        return dispatch({
+            type: CLEAN_DETAIL,
+        })
+    }
+}
+
+export function notFirstTime(){
+    return function (dispatch){
+        return dispatch({
+            type: NOT_FIRST_TIME
         })
     }
 }

@@ -2,12 +2,14 @@ import { useDispatch } from "react-redux"
 import { sort } from "../../actions"
 import { ASC, DESC, ASC_WEIGHT, DESC_WEIGHT } from "../../constantes/constantes"
 
-export default function Sort (){
+export default function Sort ({setCurrentPage}){
+    console.log('sort')
     const dispatch = useDispatch()
 
     const onChange = (e) => {
         e.preventDefault()
         dispatch(sort(e.target.value))
+        setCurrentPage(1)
     }
 
     return (

@@ -1,11 +1,11 @@
-import { FILTER, GET_DETAIL, GET_DOGS, GET_TEMPERAMENTS, SEARCH_DOGS, SORT } from "../actions"
+import { CLEAN_DETAIL, FILTER, GET_DETAIL, GET_DOGS, GET_TEMPERAMENTS, NOT_FIRST_TIME, SEARCH_DOGS, SORT } from "../actions"
 import { allDogs, ASC, DESC, ASC_WEIGHT, DESC_WEIGHT, dogsFromAPI, dogsFromDB, notKnown } from "../constantes/constantes"
 
 const initialState = {
     dogs: [],
     filtered: [],
     temperaments: [],
-    detail: {}
+    detail: {},
 }
 
 export default function reducer (state = initialState, action){
@@ -105,6 +105,11 @@ export default function reducer (state = initialState, action){
             return {
                 ...state,
                 filtered
+            }
+        case CLEAN_DETAIL:
+            return {
+                ...state,
+                detail: {}
             }
         default:
             return state

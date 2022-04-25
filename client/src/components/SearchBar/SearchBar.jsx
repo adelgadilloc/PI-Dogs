@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { searchDogs } from "../../actions"
-import Sort from "../Sort/Sort"
-import Filter from "../Filter/Filter"
+import './SearchBar.css'
 
-export default function SearchBar(){
+export default function SearchBar({setCurrentPage}){
     const [search, setSearch] = useState('')
+    console.log(search)
     const dispatch = useDispatch()
 
     const onChange = (e) =>{
@@ -17,14 +17,13 @@ export default function SearchBar(){
         e.preventDefault()
         dispatch(searchDogs(search))
         setSearch('')
+        setCurrentPage(1)
     }
 
     return <div>
         <form onSubmit={onSubmit}>
             <input type='search' onChange={onChange} value={search}/>
-            <input type='button' value='Search'/>
+            <input type='submit' value='Search'/>
         </form>
-        <Filter/>
-        <Sort/>
     </div>
 }

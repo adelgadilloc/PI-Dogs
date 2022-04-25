@@ -3,7 +3,7 @@ import { allDogs, dogsFromAPI, dogsFromDB, notKnown } from "../../constantes/con
 import { filter, getTemperaments } from "../../actions";
 import { useEffect } from "react";
 
-export default function Filter(){
+export default function Filter({setCurrentPage}){
     const temperaments = useSelector(state => state.temperaments)
     console.log(temperaments)
     const dispatch = useDispatch()
@@ -16,6 +16,7 @@ export default function Filter(){
     const changeOption = (e) => {
         e.preventDefault()
         dispatch(filter(e.target.value))
+        setCurrentPage(1)
     }
 
     return (

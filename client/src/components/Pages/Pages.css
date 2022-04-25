@@ -1,0 +1,11 @@
+.pages-nav {
+    width: 100%;
+}
+
+.pages-ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2rem;
+}
