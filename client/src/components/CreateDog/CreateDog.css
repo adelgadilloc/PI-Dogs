@@ -1,0 +1,19 @@
+.CreateDog-div{
+    padding-bottom: 1vh;
+}
+
+.CreateDog-input {
+    position: relative;
+}
+
+.CreateDog-span{
+    position: absolute;
+    left: 130vh;
+    color: red;
+    font-size: small;
+}
+
+.CreateDog-label{
+    position: absolute;
+    left: 75vh;
+}

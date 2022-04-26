@@ -1,8 +1,9 @@
 import { useDispatch } from "react-redux"
 import { sort } from "../../actions"
 import { ASC, DESC, ASC_WEIGHT, DESC_WEIGHT } from "../../constantes/constantes"
+import './Sort.css'
 
-export default function Sort ({setCurrentPage}){
+export default function Sort ({setCurrentPage, selectedSort, setSelectedSort}){
     console.log('sort')
     const dispatch = useDispatch()
 
@@ -10,13 +11,14 @@ export default function Sort ({setCurrentPage}){
         e.preventDefault()
         dispatch(sort(e.target.value))
         setCurrentPage(1)
+        setSelectedSort(e.target.value)
     }
 
     return (
-        <div>
-            <label>Sort: </label>
-            <select onChange={onChange} defaultValue='sort'>
-                <option disabled value='sort'>Sort</option>
+        <div className="Sort-div">
+            {/* <label>Sort: </label> */}
+            <select onChange={onChange} value={selectedSort}>
+                <option disabled value='elegirSort'>-Sort-</option>
                 <option disabled></option>
                 <optgroup label="Alphabetical order">
                     <option value={ASC}>A-Z</option>

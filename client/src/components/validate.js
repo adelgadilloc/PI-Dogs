@@ -1,9 +1,17 @@
 export const validate = (state) => {
 
-    let errors = {}
+    let errors = {        
+        name: false,
+        minWeight: false,
+        maxWeight: false,
+        minHeight: false,
+        maxHeight: false,
+        minLifeSpan: false,
+        maxLifeSpan: false
+    }
 
     if(!state.name){
-        errors.name = 'name is required'
+        errors.name = 'Name is required'
     }
 
     else if (!/^[a-zA-Z ]+$/.test(state.name) ||
@@ -17,19 +25,33 @@ export const validate = (state) => {
     var maxHeight = Number(state.maxHeight)
     var minLifeSpan = Number(state.minLifeSpan)
     var maxLifeSpan = Number(state.maxLifeSpan)
+    console.log(minWeight === NaN)
 
-    if(!minWeight) errors.minWeight = 'Min weight is required'
-    else if(minWeight <= 0) errors.minWeight = 'debe ser un número mayor que cero'
-    if(!maxWeight) errors.MaxWeight = 'Max weight is required'
-    else if(maxWeight <= 0) errors.maxWeight = 'debe ser un número mayor que cero'
-    if(!minHeight) errors.minHeight = 'Min height is required'
-    else if(minHeight <= 0) errors.minHeight = 'debe ser un número mayor que cero'
-    if(!maxHeight) errors.maxHeight = 'Max height is required'
-    else if(maxHeight <= 0) errors.maxHeight = 'debe ser un número mayor que cero'
-    if(!minLifeSpan) errors.minLifeSpan = 'Min life span is required'
-    else if(minLifeSpan <= 0) errors.minLifeSpan = 'debe ser un número mayor que cero'
-    if(!maxLifeSpan) errors.minWeight = 'Max life span is required'
-    else if(maxLifeSpan <= 0) errors.maxLifeSpan = 'debe ser un número mayor que cero'
+    if(!state.minWeight) 
+        errors.minWeight = 'Min weight is required'
+    else if(!/^[0-9]+$/.test(state.minWeight) || (minWeight <= 0)) 
+        errors.minWeight = 'debe ser un número mayor que cero'
+    if(!state.maxWeight) 
+        errors.maxWeight = 'Max weight is required'
+    else if(!/^[0-9]+$/.test(state.maxWeight) || (maxWeight <= 0)) 
+        errors.maxWeight = 'debe ser un número mayor que cero'
+    if(!state.minHeight) 
+        errors.minHeight = 'Min height is required'
+    else if(!/^[0-9]+$/.test(state.minHeight) || (minHeight <= 0)) 
+        errors.minHeight = 'debe ser un número mayor que cero'
+    if(!state.maxHeight) 
+        errors.maxHeight = 'Max height is required'
+    else if(!/^[0-9]+$/.test(state.maxHeight) || (maxHeight <= 0)) 
+        errors.maxHeight = 'debe ser un número mayor que cero'
+    if(!state.minLifeSpan) 
+        errors.minLifeSpan = 'Min life span is required'
+    else if(!/^[0-9]+$/.test(state.minLifeSpan) || (minLifeSpan <= 0)) 
+        errors.minLifeSpan = 'debe ser un número mayor que cero'
+    if(!state.maxLifeSpan) 
+        errors.maxLifeSpan = 'Max life span is required'
+    else if(!/^[0-9]+$/.test(state.maxLifeSpan) || (maxLifeSpan <= 0)) 
+        errors.maxLifeSpan = 'debe ser un número mayor que cero'
 
+    console.log(errors)
     return errors
 }

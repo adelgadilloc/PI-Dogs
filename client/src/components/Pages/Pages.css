@@ -9,3 +9,16 @@
     justify-content: center;
     margin-top: 2rem;
 }
+
+.pages-button {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0;
+}
+
+.active {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0;
+    background-color: gold;
+}

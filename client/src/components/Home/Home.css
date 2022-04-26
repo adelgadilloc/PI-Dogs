@@ -3,7 +3,23 @@
     grid-template-columns: auto auto auto auto;
 }
 
+div.temperaments{
+    position: relative;
+    left: 50px;
+    overflow: scroll;
+    width: 200px;
+    height: 200px;
+}
+
 .dog-image{
     height: 40vh;
     width: 40vh;
+}
+
+.home-link{
+    text-decoration: none;
+}
+
+.home-div {
+    padding-top: 1vh;
 }

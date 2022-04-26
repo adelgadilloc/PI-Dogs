@@ -1,4 +1,4 @@
-import { CLEAN_DETAIL, FILTER, GET_DETAIL, GET_DOGS, GET_TEMPERAMENTS, NOT_FIRST_TIME, SEARCH_DOGS, SORT } from "../actions"
+import { CLEAN_DETAIL, FILTER, GET_DETAIL, GET_DOGS, GET_TEMPERAMENTS, NOT_FIRST_TIME, SEARCH_DOGS, SET_UNMOUNT_DETAIL_FLAG, SORT } from "../actions"
 import { allDogs, ASC, DESC, ASC_WEIGHT, DESC_WEIGHT, dogsFromAPI, dogsFromDB, notKnown } from "../constantes/constantes"
 
 const initialState = {
@@ -6,9 +6,11 @@ const initialState = {
     filtered: [],
     temperaments: [],
     detail: {},
+    unmountDetail: false
 }
 
 export default function reducer (state = initialState, action){
+    console.log(state.dogs)
     switch(action.type){
         case GET_DOGS:
             return {
@@ -68,6 +70,7 @@ export default function reducer (state = initialState, action){
                 detail: action.payload
             }
         case SORT:
+            console.log(state.dogs)
             if([ASC, DESC].includes(action.payload)){
                 filtered = [...state.filtered.sort( (a,b) => {
                     if(a.name.toUpperCase() < b.name.toUpperCase()){
@@ -101,7 +104,6 @@ export default function reducer (state = initialState, action){
                     }
                 }), ...perrosSinPeso]
             }
-            console.log(filtered)
             return {
                 ...state,
                 filtered
@@ -110,6 +112,11 @@ export default function reducer (state = initialState, action){
             return {
                 ...state,
                 detail: {}
+            }
+        case SET_UNMOUNT_DETAIL_FLAG:
+            return {
+                ...state,
+                unmountDetail: action.payload
             }
         default:
             return state

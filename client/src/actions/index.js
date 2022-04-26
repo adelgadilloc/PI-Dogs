@@ -8,6 +8,7 @@ export const GET_DETAIL = 'GET_DETAIL'
 export const SORT = 'SORT'
 export const CLEAN_DETAIL = 'CLEAN_DETAIL'
 export const NOT_FIRST_TIME = 'NOT_FIRST_TIME'
+export const SET_UNMOUNT_DETAIL_FLAG = 'SET_UNMOUNT_DETAIL_FLAG'
 
 export function getDogs(){
     return async function (dispatch){
@@ -60,6 +61,7 @@ export function getDetail(id){
 }
 
 export function sort(sort){
+    console.log(sort)
     return function (dispatch){
         return dispatch({
             type: SORT,
@@ -86,6 +88,15 @@ export function notFirstTime(){
     return function (dispatch){
         return dispatch({
             type: NOT_FIRST_TIME
+        })
+    }
+}
+
+export function setUnmountDetailFlag(payload){
+    return function (dispatch){
+        return dispatch({
+            type: SET_UNMOUNT_DETAIL_FLAG,
+            payload
         })
     }
 }

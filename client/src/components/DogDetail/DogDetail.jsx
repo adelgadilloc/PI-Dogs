@@ -1,15 +1,17 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
-import { getDetail, cleanDetail } from "../../actions"
+import { getDetail, setUnmountDetailFlag } from "../../actions"
+import perro from '../../image/perro.png'
 
 export default function DogDetail(){
     const {id} = useParams()
     const dispatch = useDispatch()
     
     useEffect(() => {
+        dispatch(setUnmountDetailFlag(true))
         dispatch(getDetail(id))
-        return dispatch(cleanDetail())
+        // return dispatch(cleanDetail())
     }, [dispatch, id])
 
     const detail = useSelector(state => state.detail)
@@ -30,7 +32,10 @@ export default function DogDetail(){
             :
             <div>
                 <h1>{name}</h1>
-                {image && <img src={image} alt=''/>}
+                {image?
+                    <img src={image} alt=''/>
+                :
+                    <img src={perro} alt=''/>}
                 {minWeight && maxWeight ?
                     (minWeight === maxWeight) ?
                         <h3>Weighs aproximately {minWeight} kg</h3>

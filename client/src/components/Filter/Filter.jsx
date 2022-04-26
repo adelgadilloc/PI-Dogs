@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { allDogs, dogsFromAPI, dogsFromDB, notKnown } from "../../constantes/constantes";
 import { filter, getTemperaments } from "../../actions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import './Filter.css'
 
-export default function Filter({setCurrentPage}){
+export default function Filter({setCurrentPage, selectedFilter, setSelectedFilter, setSelectedSort}){
     const temperaments = useSelector(state => state.temperaments)
     console.log(temperaments)
     const dispatch = useDispatch()
@@ -16,14 +17,16 @@ export default function Filter({setCurrentPage}){
     const changeOption = (e) => {
         e.preventDefault()
         dispatch(filter(e.target.value))
+        setSelectedFilter(e.target.value)
+        setSelectedSort('elegirSort')
         setCurrentPage(1)
     }
 
     return (
-        <div>
-            <label>Filter </label>
-            <select onChange={changeOption} defaultValue='elegirUnFiltro'>
-                <option disabled value='elegirUnFiltro'>Choose a filter</option>
+        <div className="Filter-div">
+            {/* <label>Filter </label> */}
+            <select onChange={changeOption} value={selectedFilter}>
+                <option disabled value='elegirUnFiltro'>-Filter-</option>
                 <option disabled></option>
                 <option value={allDogs}>No filter</option>
                 <option value={dogsFromAPI}>Extant breeds</option>
