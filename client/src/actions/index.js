@@ -12,7 +12,7 @@ export const SET_UNMOUNT_DETAIL_FLAG = 'SET_UNMOUNT_DETAIL_FLAG'
 
 export function getDogs(){
     return async function (dispatch){
-        const {data} = await axios.get('http://localhost:3001/dogs')
+        const {data} = await axios.get('/dogs')
         return dispatch({
             type: GET_DOGS,
             payload: data
@@ -22,7 +22,7 @@ export function getDogs(){
 
 export function searchDogs(search){
     return async function (dispatch){
-        const {data} = await axios.get(`http://localhost:3001/dogs?name=${search}`)
+        const {data} = await axios.get(`/dogs?name=${search}`)
         return dispatch({
             type:SEARCH_DOGS,
             payload: data
@@ -41,7 +41,7 @@ export function filter(filter){
 
 export function getTemperaments(){
     return async function (dispatch){
-        const {data} = await axios.get('http://localhost:3001/temperaments')
+        const {data} = await axios.get('/temperaments')
         return dispatch({
             type: GET_TEMPERAMENTS,
             payload: data
@@ -52,7 +52,7 @@ export function getTemperaments(){
 
 export function getDetail(id){
     return async function (dispatch){
-        const {data} = await axios.get(`http://localhost:3001/dogs/${id}`)
+        const {data} = await axios.get(`/dogs/${id}`)
         return dispatch({
             type:GET_DETAIL,
             payload: data
@@ -72,7 +72,7 @@ export function sort(sort){
 
 export function createDog(dog){
     return async function (){
-        return await axios.post('http://localhost:3001/dog', dog)
+        return await axios.post('/dog', dog)
     }
 }
 
